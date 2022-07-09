@@ -1,0 +1,64 @@
+<form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+    <div class="card m-3">
+        <h3 class="card-header">Ticket Form</h3>
+        <div class="card-body">
+            <div class="form-group row">
+                <div class="form-group">
+                    <label>Select number of Tickets</label>
+                    <select formControlName="numberOfTickets" class="matInput m-2" (change)="onChangeTickets($event)"
+                        [ngClass]="{ 'is-invalid': submitted && f.numberOfTickets.errors }">
+                        <option value=""></option>
+                        <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">{{i}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.numberOfTickets.errors" class="invalid-feedback">
+                        <div *ngIf="f.numberOfTickets.errors.required">Number of tickets is required</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngFor="let ticket of t?.controls; let i = index" class="list-group list-group-flush">
+            <div class="list-group-item">
+                <h5 class="card-title">Ticket {{i + 1}}</h5>
+                <div [formGroup]="ticket" class="form-group row">
+                    <div class="form-group col-md-4">
+                        <mat-form-field appearance="">
+                            <mat-label>Name</mat-label>
+                            <input type="text" matInput formControlName="name" class="m-2"
+                                [ngClass]="{ 'is-invalid': submitted && ticket.controls.name.errors }" />
+                            <div *ngIf="submitted && ticket.controls.name.errors" class="invalid-feedback">
+                                <div *ngIf="ticket.controls.name.errors.required">Name is required</div>
+                            </div>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <mat-form-field appearance="">
+                        <mat-label>Email</mat-label>
+                        <input type="text" matInput formControlName="email" class="m-2"
+                            [ngClass]="{ 'is-invalid': submitted && ticket.controls.email.errors }" />
+                        <div *ngIf="submitted && ticket.controls.email.errors" class="invalid-feedback">
+                            <div *ngIf="ticket.controls.email.errors.required">Email is required</div>
+                            <div *ngIf="ticket.controls.email.errors.email">Email must be a valid email address</div>
+                        </div>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <mat-form-field>
+                            <input matInput [min]="minDate" [matDatepicker]="picker" placeholder="Choose a date" 
+                               formControlName="date"  #pickerInput >
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                            <!-- <mat-error *ngIf="ticket.controls.date.errors">ticket date is required</mat-error> -->
+                            <mat-error *ngIf="ticket.controls.date.errors">{{getErrorMessage(pickerInput?.value)}}</mat-error>
+                          </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="card-footer text-center">
+            <button class="btn btn-primary mr-1">Buy Tickets</button>
+            <button class="btn btn-secondary mr-1" type="reset" (click)="onReset()">Reset</button>
+            <button class="btn btn-secondary" type="button" (click)="onClear()">Clear</button>
+        </div>
+    </div>
+</form>
